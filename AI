@@ -1,0 +1,29 @@
+import pandas as pd
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
+
+# Load your dataset
+data = pd.read_csv('your_data.csv')
+
+# Example: Assume you're working with numeric features
+features = data[['feature1', 'feature2', 'feature3']]
+
+# Preprocess data: Scaling the features
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(features)
+
+# Instantiate the model
+model = IsolationForest(n_estimators=100, contamination=0.05)  # contamination is the expected outlier rate
+
+# Fit the model
+model.fit(scaled_features)
+
+# Predict outliers
+predictions = model.predict(scaled_features)
+
+# Mark outliers
+data['Outlier'] = predictions
+data['Outlier'] = data['Outlier'].apply(lambda x: 'Yes' if x == -1 else 'No')
+
+# Show the results
+print(data.head())
